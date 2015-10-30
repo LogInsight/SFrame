@@ -52,16 +52,31 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import operator
 import os
+import io
 import pickle
 import struct
 import sys
 import types
 from functools import partial
 import itertools
-from copy_reg import _extension_registry, _inverted_registry, _extension_cache
-import new
+try: 
+    from copy_reg import _extension_registry, _inverted_registry, _extension_cache
+except ImportError:
+    from copyreg import _extension_registry, _inverted_registry, _extension_cache
+try:
+    import new
+    new_code = new.code
+    new_function = new.function
+except ImportError:
+    import types
+    new_code = types.CodeType
+    new_function = types.FunctionType
+    
 import dis
 import traceback
+
+if sys.version_info > (3,):
+    long = int
 
 #relevant opcodes
 STORE_GLOBAL = chr(dis.opname.index('STORE_GLOBAL'))
@@ -93,7 +108,10 @@ else:
 try:
     from cStringIO import StringIO
 except ImportError:
-    from StringIO import StringIO
+    try:
+        from StringIO import StringIO
+    except ImportError:
+        from io import StringIO
 
 # These helper functions were copied from PiCloud's util module.
 def islambda(func):
@@ -125,7 +143,11 @@ useForcedImports = True #Should I use forced imports for tracking?
 
 class CloudPickler(pickle.Pickler):
 
-    dispatch = pickle.Pickler.dispatch.copy()
+    try:
+        dispatch = pickle.Pickler.dispatch.copy()
+    except:
+        dispatch = pickle._Pickler.dispatch.copy()        
+
     savedForceImports = False
     savedDjangoEnv = False #hack tro transport django environment
 
@@ -144,7 +166,7 @@ class CloudPickler(pickle.Pickler):
         self.inject_addons()
         try:
             return pickle.Pickler.dump(self, obj)
-        except RuntimeError, e:
+        except RuntimeError as e:
             if 'recursion' in e.args[0]:
                 msg = """Could not pickle object as excessively deep recursion required.
                 Try _fast_serialization=2 or contact PiCloud support"""
@@ -157,7 +179,7 @@ class CloudPickler(pickle.Pickler):
     def save_buffer(self, obj):
         """Fallback to save_string"""
         pickle.Pickler.save_string(self,str(obj))
-    dispatch[buffer] = save_buffer
+    dispatch[memoryview] = save_buffer
 
     #block broken objects
     def save_unsupported(self, obj, pack=None):
@@ -185,7 +207,7 @@ class CloudPickler(pickle.Pickler):
             self.save_reduce(_get_module_builtins, (), obj=obj)
         else:
             pickle.Pickler.save_dict(self, obj)
-    dispatch[pickle.DictionaryType] = save_dict
+    dispatch[dict] = save_dict
 
 
     def save_module(self, obj, pack=struct.pack):
@@ -351,7 +373,7 @@ class CloudPickler(pickle.Pickler):
                 extended_arg = 0
                 i = i+2
                 if op == EXTENDED_ARG:
-                    extended_arg = oparg*65536L
+                    extended_arg = oparg*long(65536)
                 if op in GLOBAL_OPS:
                     out_names.add(names[oparg])
         #print 'extracted', out_names, ' from ', names
@@ -383,7 +405,7 @@ class CloudPickler(pickle.Pickler):
         def get_contents(cell):
             try:
                 return cell.cell_contents
-            except ValueError, e: #cell is empty error on not yet assigned
+            except ValueError as e: #cell is empty error on not yet assigned
                 raise pickle.PicklingError('Function to be pickled has free variables that are referenced before assignment in enclosing scope')
 
 
@@ -401,7 +423,7 @@ class CloudPickler(pickle.Pickler):
             outvars.append('globals: ' + str(f_globals))
             outvars.append('defaults: ' + str(defaults))
             outvars.append('closure: ' + str(closure))
-            print 'function ', func, 'is extracted to: ', ', '.join(outvars)
+            print('function ', func, 'is extracted to: ', ', '.join(outvars))
 
         base_globals = self.globals_ref.get(id(func.func_globals), {})
         self.globals_ref[id(func.func_globals)] = base_globals
@@ -446,7 +468,7 @@ class CloudPickler(pickle.Pickler):
                     themodule = sys.modules[modname]
                     try:
                         klass = getattr(themodule, name)
-                    except AttributeError, a:
+                    except AttributeError as a:
                         #print themodule, name, obj, type(obj)
                         raise pickle.PicklingError("Can't pickle builtin %s" % obj)
                 else:
@@ -491,9 +513,9 @@ class CloudPickler(pickle.Pickler):
 
         write(pickle.GLOBAL + modname + '\n' + name + '\n')
         self.memoize(obj)
-    dispatch[types.ClassType] = save_global
+    dispatch[types.new_class] = save_global
     dispatch[types.BuiltinFunctionType] = save_global
-    dispatch[types.TypeType] = save_global
+    dispatch[type] = save_global
 
     def save_instancemethod(self, obj):
         #Memoization rarely is ever useful due to python bounding
@@ -555,7 +577,7 @@ class CloudPickler(pickle.Pickler):
             self.save_image(obj)
         else:
             self.save_inst_logic(obj)
-    dispatch[types.InstanceType] = save_inst
+    #dispatch[types.InstanceType] = save_inst
 
     def save_property(self, obj):
         # properties not correctly saved in python
@@ -653,7 +675,7 @@ class CloudPickler(pickle.Pickler):
 
     #python2.6+ supports xrange pickling. some py2.5 extensions might as well.  We just test it
     try:
-        xrange(0).__reduce__()
+        range(0).__reduce__()
     except TypeError: #can't pickle -- use PiCloud pickler
         dispatch[xrange] = save_xrange
 
@@ -720,7 +742,7 @@ class CloudPickler(pickle.Pickler):
         self.save(retval)  #save stringIO
         self.memoize(obj)
 
-    dispatch[file] = save_file
+    dispatch[io.TextIOWrapper] = save_file
     """Special functions for Add-on libraries"""
 
     def inject_numpy(self):
@@ -774,7 +796,8 @@ class CloudPickler(pickle.Pickler):
         email = sys.modules.get('email')
         if not email:
             return
-        self.dispatch[email.LazyImporter] = self.__class__.save_unsupported
+        if hasattr(email, 'LazyImporter'):
+            self.dispatch[email.LazyImporter] = self.__class__.save_unsupported
 
     def inject_unity_proxy(self):
         # get the top level module
@@ -818,7 +841,7 @@ class CloudPickler(pickle.Pickler):
         if not id(obj) in self.memo:
             pickle.Pickler.memoize(self, obj)
             if printMemoization:
-                print 'memoizing ' + str(obj)
+                print('memoizing ' + str(obj))
 
 
 
@@ -852,7 +875,7 @@ def django_settings_load(name):
         modified_env = True
     try:
         module = subimport(name)
-    except Exception, i:
+    except Exception as i:
         print >> sys.stderr, 'Cloud not import django settings %s:' % (name)
         print_exec(sys.stderr)
         if modified_env:
@@ -886,7 +909,7 @@ def _modules_to_main(modList):
         if type(modname) is str:
             try:
                 mod = __import__(modname)
-            except Exception, i: #catch all...
+            except Exception as i: #catch all...
                 sys.stderr.write('warning: could not import %s\n.  Your function may unexpectedly error due to this import failing; \
 A version mismatch is likely.  Specific error was:\n' % modname)
                 print_exec(sys.stderr)
@@ -947,7 +970,9 @@ def _make_skel_func(code, num_closures, base_globals = None):
                               None, None, dummy_closure)
 
 # this piece of opaque code is needed below to modify 'cell' contents
-cell_changer_code = new.code(
+cell_changer_code = None 
+''' XXXX:
+cell_changer_code = new_code(
     1, 1, 2, 0,
     ''.join([
         chr(dis.opmap['LOAD_FAST']), '\x00\x00',
@@ -957,10 +982,11 @@ cell_changer_code = new.code(
     ]),
     (), (), ('newval',), '<nowhere>', 'cell_changer', 1, '', ('c',), ()
 )
+'''
 
 def _change_cell_value(cell, newval):
     """ Changes the contents of 'cell' object to newval """
-    return new.function(cell_changer_code, {}, None, (), (cell,))(newval)
+    return new_function(cell_changer_code, {}, None, (), (cell,))(newval)
 
 """Constructors for 3rd party libraries
 Note: These can never be renamed due to client compatibility issues"""

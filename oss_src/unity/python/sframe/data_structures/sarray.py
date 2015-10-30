@@ -16,6 +16,7 @@ of the BSD license. See the LICENSE file for details.
 
 from .. import connect as _mt
 from ..connect import main as glconnect
+from ..cython import _encode
 from ..cython.cy_flexible_type import pytype_from_dtype, pytype_from_array_typecode
 from ..cython.cy_flexible_type import infer_type_of_list, infer_type_of_sequence
 from ..cython.cy_sarray import UnitySArrayProxy
@@ -27,6 +28,7 @@ from ..deps import numpy, HAS_NUMPY
 from ..deps import pandas, HAS_PANDAS
 
 import time
+import sys
 import array
 import collections
 import datetime
@@ -34,6 +36,9 @@ import warnings
 import numbers
 
 __all__ = ['SArray']
+
+if sys.version_info.major > 2:
+    long = int
 
 def _create_sequential_sarray(size, start=0, reverse=False):
     if type(size) is not int:
@@ -356,7 +361,8 @@ class SArray(object):
                     elif len(data.shape) > 2:
                         raise TypeError("Cannot convert Numpy arrays of greater than 2 dimensions")
 
-                elif (isinstance(data, str) or isinstance(data, unicode)):
+                elif (isinstance(data, str) or
+                      (sys.version_info.major < 3 and isinstance(data, unicode))):
                     # if it is a file, we default to string
                     dtype = str
                 elif isinstance(data, array.array):
@@ -371,7 +377,10 @@ class SArray(object):
             if HAS_PANDAS and isinstance(data, pandas.Series):
                 with cython_context():
                     self.__proxy__.load_from_iterable(data.values, dtype, ignore_cast_failure)
-            elif (isinstance(data, str) or isinstance(data, unicode)):
+            elif (HAS_NUMPY and isinstance(data, numpy.ndarray)) or (hasattr(data, '__iter__') and not isinstance(data, dict)):
+                with cython_context():
+                    self.__proxy__.load_from_iterable(_encode(data), dtype, ignore_cast_failure)
+            elif (isinstance(data, str) or (sys.version_info.major <= 2 and isinstance(data, unicode))):
                 internal_url = _make_internal_url(data)
                 with cython_context():
                     self.__proxy__.load_autodetect(internal_url, dtype)
@@ -382,6 +391,7 @@ class SArray(object):
                 with cython_context():
                     self.__proxy__.load_from_iterable(data, dtype, ignore_cast_failure)
             else:
+                print("Debug %s" % type(data))
                 raise TypeError("Unexpected data source. " \
                                 "Possible data source types are: list, " \
                                 "numpy.ndarray, pandas.Series, and string(url)")
@@ -586,16 +596,13 @@ class SArray(object):
                 format = 'binary'
         if format == 'binary':
             with cython_context():
-                self.__proxy__.save(_make_internal_url(filename))
+                self.__proxy__.save(_encode(_make_internal_url(filename)))
         elif format == 'text' or format == 'csv':
             sf = _SFrame({'X1':self})
             with cython_context():
                 sf.__proxy__.save_as_csv(_make_internal_url(filename), {'header':False})
         else:
             raise ValueError("Unsupported format: {}".format(format))
-
-    def _escape_space(self,s):
-            return "".join([ch.encode('string_escape') if ch.isspace() else ch for ch in s])
 
     def __repr__(self):
         """
@@ -607,7 +614,7 @@ class SArray(object):
             ret = ret + "Rows: " + str(self.size()) + "\n"
         else:
             ret = ret + "Rows: ?\n"
-        ret = ret + data_str
+        ret = ret + data_str.decode()
         return ret
 
     def __str__(self):
@@ -619,8 +626,11 @@ class SArray(object):
         if self.dtype() == _Image:
             headln = str(list(self.astype(str).head(100)))
         else:
-            headln = self._escape_space(str(list(self.head(100))))
-            headln = unicode(headln.decode('string_escape'),'utf-8',errors='replace').encode('utf-8')
+            headln = str(list(self.head(100)))
+            if sys.version_info.major < 3:
+                headln = unicode(headln.decode('string_escape'),'utf-8',errors='replace').encode('utf-8')
+            else:
+                headln = headln.encode().decode('unicode_escape').encode('utf-8')
         if (self.__proxy__.has_size() == False or self.size() > 100):
             # cut the last close bracket
             # and replace it with ...
@@ -700,7 +710,7 @@ class SArray(object):
         Rows: 3
         [1, 0, 0]
         """
-        return SArray(_proxy = self.__proxy__.left_scalar_operator(item, 'in'))
+        return SArray(_proxy = self.__proxy__.left_scalar_operator(item, _encode('in')))
 
     def __add__(self, other):
         """
@@ -952,7 +962,7 @@ class SArray(object):
             if type(other) is SArray:
                 return SArray(_proxy = self.__proxy__.vector_operator(other.__proxy__, '=='))
             else:
-                return SArray(_proxy = self.__proxy__.left_scalar_operator(other, '=='))
+                return SArray(_proxy = self.__proxy__.left_scalar_operator(other, _encode('==')))
 
 
     def __ne__(self, other):
@@ -1301,7 +1311,7 @@ class SArray(object):
         options = dict()
         options["to_lower"] = to_lower == True
         # defaults to std::isspace whitespace delimiters if no others passed in
-    	options["delimiters"] = delimiters
+        options["delimiters"] = delimiters
 
         with cython_context():
             return SArray(_proxy=self.__proxy__.count_bag_of_words(options))
@@ -2986,9 +2996,9 @@ class SArray(object):
         with cython_context():
             if (self.dtype() == dict and column_types == None):
                 limit = limit if limit != None else []
-                return _SFrame(_proxy=self.__proxy__.unpack_dict(column_name_prefix, limit, na_value))
+                return _SFrame(_proxy=self.__proxy__.unpack_dict(column_name_prefix.encode(), limit, na_value))
             else:
-                return _SFrame(_proxy=self.__proxy__.unpack(column_name_prefix, limit, column_types, na_value))
+                return _SFrame(_proxy=self.__proxy__.unpack(column_name_prefix.encode(), limit, column_types, na_value))
 
     def sort(self, ascending=True):
         """

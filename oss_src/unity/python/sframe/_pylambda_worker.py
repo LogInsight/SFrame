@@ -13,16 +13,16 @@ if __name__ == "__main__":
         debug_mode = False
 
     if debug_mode:
-        print "PyLambda script called with no IPC information; entering diagnostic mode."
+        print("PyLambda script called with no IPC information; entering diagnostic mode.")
 
     script_path = abspath(sys.modules[__name__].__file__)
     main_dir = split(script_path)[0]
 
     if debug_mode:
-        print "Script directory: %s." % script_path
-        print "Main program directory: %s." % main_dir
+        print("Script directory: %s." % script_path)
+        print("Main program directory: %s." % main_dir)
     else:
-        print "INFO: launching pylamda_worker in directory %s." % main_dir
+        print("INFO: launching pylamda_worker in directory %s." % main_dir)
         
     # Handle the different library type extensions
     pylambda_workers = glob(join(main_dir, "libpylambda_worker.*"))
@@ -31,18 +31,18 @@ if __name__ == "__main__":
 
         error = False
         
-        print ("Found %d candidade pylambda_worker file(s): \n   %s."
-               % (len(pylambda_workers), "\n   ".join(pylambda_workers)))
+        print(("Found %d candidade pylambda_worker file(s): \n   %s."
+               % (len(pylambda_workers), "\n   ".join(pylambda_workers))))
 
         if len(pylambda_workers) > 1:
-            print "WARNING: multiple pylambda worker libraries."
+            print("WARNING: multiple pylambda worker libraries.")
             error = True
 
         if len(pylambda_workers) == 0:
-            print "ERROR: Cannot find pylambda_worker extension library."
+            print("ERROR: Cannot find pylambda_worker extension library.")
             error = True
 
-        print "Installation Directory Structure: "
+        print("Installation Directory Structure: ")
 
         visited_files = []
 
@@ -63,10 +63,10 @@ if __name__ == "__main__":
             else:
                 return n
                 
-        print "\n".join( ("  %s: %s" % (strip_name(name), stats))
-                         for name, stats in sorted(visited_files))
+        print("\n".join( ("  %s: %s" % (strip_name(name), stats))
+                         for name, stats in sorted(visited_files)))
 
-        print "INFO: Loading pylambda worker library: ", pylambda_workers[0]
+        print("INFO: Loading pylambda worker library: ", pylambda_workers[0])
         
     
     pylambda_lib = PyDLL(pylambda_workers[0])
@@ -82,4 +82,4 @@ if __name__ == "__main__":
         result = pylambda_lib.pylambda_worker_main(c_char_p(main_dir), c_char_p("debug"))
 
     if debug_mode:
-        print "Process exited with code %d." % result
+        print("Process exited with code %d." % result)

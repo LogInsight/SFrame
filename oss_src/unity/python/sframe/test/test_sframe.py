@@ -12,7 +12,9 @@ from ..data_structures.image import Image
 from ..connect import main as glconnect
 from ..connect import server
 from ..util import _assert_sframe_equal
-from ..import _launch, load_sframe, aggregate
+from .. import _launch, load_sframe, aggregate
+from . import util
+
 import pandas as pd
 from ..util.timezone import GMT
 from pandas.util.testing import assert_frame_equal
@@ -22,7 +24,6 @@ import tempfile
 import os
 import csv
 import gzip
-import util
 import string
 import time
 import numpy as np
@@ -56,7 +57,7 @@ class SFrameTest(unittest.TestCase):
         self.int_data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         self.float_data = [1., 2., 3., 4., 5., 6., 7., 8., 9., 10.]
         self.string_data = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
-        self.a_to_z = [str(unichr(97 + i)) for i in range(0, 26)]
+        self.a_to_z = [str(chr(97 + i)) for i in range(0, 26)]
         self.dataframe = pd.DataFrame({'int_data': self.int_data, 'float_data': self.float_data, 'string_data': self.string_data})
         self.url = "http://s3-us-west-2.amazonaws.com/testdatasets/a_to_z.txt.gz"
 
@@ -1374,7 +1375,7 @@ class SFrameTest(unittest.TestCase):
         sf['d'] = [1.0,2.0,1.0,2.0,      3.0,3.0,1.0,    4.0,   None, 2.0,  None]
         sf['e'] = [{'x': 1}] * len(sf['a'])
 
-        print sf['b'].dtype()
+        print(sf['b'].dtype())
 
         result = sf.groupby('a', aggregate.CONCAT('b'))
         expected_result = SFrame({
@@ -1447,12 +1448,13 @@ class SFrameTest(unittest.TestCase):
     def test_unique(self):
         sf = SFrame({'a':[1,1,2,2,3,3,4,4,5,5],'b':[1,2,3,4,5,6,7,8,9,10]})
         self.assertEqual(len(sf.unique()), 10)
+
         vals = [1,1,2,2,3,3,4,4, None, None]
         sf = SFrame({'a':vals,'b':vals})
         res = sf.unique()
         self.assertEqual(len(res), 5)
-        self.assertEqual(sorted(list(res['a'])), sorted([1,2,3,4,None]))
-        self.assertEqual(sorted(list(res['b'])), sorted([1,2,3,4,None]))
+        self.assertEqual(set(res['a']), set([1,2,3,4,None]))
+        self.assertEqual(set(res['b']), set([1,2,3,4,None]))
 
     def test_append_empty(self):
         sf_with_data = SFrame(data=self.dataframe)
@@ -1591,7 +1593,7 @@ class SFrameTest(unittest.TestCase):
         beg = time.time()
         res = self.employees_sf.join(self.departments_sf)
         end = time.time()
-        print "Really small join: " + str(end-beg) + " s"
+        print("Really small join: " + str(end-beg) + " s")
 
         self.__assert_join_results_equal(res, inner_expected)
 
@@ -1718,7 +1720,7 @@ class SFrameTest(unittest.TestCase):
         beg = time.time()
         res = pk_gibberish.join(join_with_gibberish, on={'letter':'a_letter','number':'a_number'})
         end = time.time()
-        print "Join took " + str(end-beg) + " seconds"
+        print("Join took " + str(end-beg) + " seconds")
         self.__assert_join_results_equal(res, expected_answer)
 
     def test_convert_dataframe_empty(self):
@@ -2872,7 +2874,7 @@ class SFrameTest(unittest.TestCase):
 
     def test_sframe_to_rdd(self):
         if not HAS_PYSPARK:
-            print "Did not run Pyspark unit tests!"
+            print("Did not run Pyspark unit tests!")
             return
         sc = SparkContext('local')
         # Easiest case: single column of integers
@@ -2888,7 +2890,7 @@ class SFrameTest(unittest.TestCase):
 
     def test_rdd_to_sframe(self):
         if not HAS_PYSPARK:
-            print "Did not run Pyspark unit tests!"
+            print("Did not run Pyspark unit tests!")
             return
 
         sc = SparkContext('local')
@@ -2973,7 +2975,7 @@ class SFrameTest(unittest.TestCase):
         tmp_dir = tempfile.mkdtemp()
         data.save(tmp_dir)
         shutil.rmtree(tmp_dir)
-        print data
+        print(data)
 
     def test_empty_argmax_does_not_fail(self):
         # an empty argmax should not result in a crash

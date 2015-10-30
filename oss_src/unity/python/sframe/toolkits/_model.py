@@ -366,7 +366,7 @@ class CustomModel(object):
                                             *self._get_summary_struct() )
         _mt._get_metric_tracker().track(self.__class__.__module__ + '.summary')
         try:
-            print self.__repr__()
+            print(self.__repr__())
         except:
             return self.__class__.__name__
 

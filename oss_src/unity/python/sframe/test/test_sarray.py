@@ -8,6 +8,7 @@ of the BSD license. See the LICENSE file for details.
 '''
 from ..data_structures.sarray import SArray
 from ..util.timezone import GMT
+from . import util
 
 import pandas as pd
 import numpy as np
@@ -19,7 +20,6 @@ import os
 import math
 import shutil
 import array
-import util
 import time
 import itertools
 import warnings
@@ -994,7 +994,7 @@ class SArrayTest(unittest.TestCase):
 
     def test_append(self):
         n = len(self.int_data)
-        m = n / 2
+        m = n // 2
 
         self.__test_append(self.int_data[0:m], self.int_data[m:n], int)
         self.__test_append(self.bool_data[0:m], self.bool_data[m:n], int)
@@ -1037,11 +1037,11 @@ class SArrayTest(unittest.TestCase):
     def test_word_count2(self):
         sa = SArray(["This is some url http://www.someurl.com!!", "Should we? Yes, we should."])
         #TODO: Get some weird unicode whitespace in the Chinese and Russian tests
-	expected1 = [{"this": 1, "is": 1, "some": 1, "url": 1, "http://www.someurl.com!!": 1}, 
+        expected1 = [{"this": 1, "is": 1, "some": 1, "url": 1, "http://www.someurl.com!!": 1},
                      {"should": 1, "we?": 1, "we": 1, "yes,": 1, "should.": 1}]
-	expected2 = [{"this is some url http://www.someurl.com": 1}, 
+        expected2 = [{"this is some url http://www.someurl.com": 1}, 
                      {"should we": 1, " yes": 1, " we should.": 1}]
-	word_counts1 = sa._count_words()
+        word_counts1 = sa._count_words()
         word_counts2 = sa._count_words(delimiters=["?", "!", ","])
 
         self.assertEquals(word_counts1.dtype(), dict)
@@ -1571,7 +1571,7 @@ class SArrayTest(unittest.TestCase):
         # another without delimiter test
         sa = SArray(['20110623T191001'])
         sa = sa.str_to_datetime("%Y%m%dT%H%M%S%F%q")
-        expected = [dt.datetime(2011, 06, 23, 19, 10, 1)]
+        expected = [dt.datetime(2011, 6, 23, 19, 10, 1)]
         self.__test_equal(sa,expected,dt.datetime)
 
         # am pm
@@ -1673,4 +1673,4 @@ class SArrayTest(unittest.TestCase):
         tmp_dir = tempfile.mkdtemp()
         data.save(tmp_dir)
         shutil.rmtree(tmp_dir)
-        print data
+        print(data)

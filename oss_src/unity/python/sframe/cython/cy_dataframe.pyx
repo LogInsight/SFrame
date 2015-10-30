@@ -60,9 +60,9 @@ cdef gl_dataframe gl_dataframe_from_dict_of_arrays(dict df) except *:
     cdef flex_list fl
 
     for key, value in sorted(df.iteritems()):
-        ret.names.push_back(key)
-        ret.values[str(key)] = common_typed_flex_list_from_iterable(value, &ftype)
-        ret.types[str(key)] = ftype
+        ret.names.push_back(key.encode())
+        ret.values[key.encode()] = common_typed_flex_list_from_iterable(value, &ftype)
+        ret.types[key.encode()] = ftype
 
     return ret
 

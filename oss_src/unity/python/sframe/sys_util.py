@@ -11,7 +11,7 @@ import logging
 from distutils.util import get_platform as _get_platform
 import glob as _glob
 import subprocess as _subprocess
-import _pylambda_worker
+from . import _pylambda_worker
 
 def make_unity_server_env():
     """
@@ -91,7 +91,7 @@ def test_pylambda_worker():
 
     import subprocess
 
-    print "\nLaunch pylambda_worker process with simulated unity_server environment."
+    print("\nLaunch pylambda_worker process with simulated unity_server environment.")
 
     proc = subprocess.Popen(
         [sys.executable, os.path.abspath(_pylambda_worker.__file__)],
@@ -159,9 +159,9 @@ def get_libjvm_path():
         # directory that libjvm.so resides (the path_suffix will not be used)
         # Then, check GRAPHLAB_JAVA_HOME, which will override JAVA_HOME.
         potential_paths = []
-        if os.environ.has_key('JAVA_HOME'):
+        if 'JAVA_HOME' in os.environ:
             path_prefixes.insert(0, os.environ['JAVA_HOME'])
-        if os.environ.has_key('GRAPHLAB_JAVA_HOME'):
+        if 'GRAPHLAB_JAVA_HOME' in os.environ:
             path_prefixes.insert(0, os.environ['GRAPHLAB_JAVA_HOME'])
 
         # Construct the full paths to search
@@ -169,7 +169,7 @@ def get_libjvm_path():
             for j in path_prefixes:
                 potential_paths.append(j + i)
 
-        if os.environ.has_key('GRAPHLAB_LIBJVM_DIRECTORY'):
+        if 'GRAPHLAB_LIBJVM_DIRECTORY' in os.environ:
             potential_paths.insert(0, os.environ['GRAPHLAB_LIBJVM_DIRECTORY'])
         for path in potential_paths:
             if sys.platform == 'win32':
