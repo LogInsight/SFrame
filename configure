@@ -202,9 +202,9 @@ if [[ $python_only == 1 ]]; then
 fi
 
 
-if [[ $run_toolchain_install == 1 ]]; then
-        run_cleanup
-        ./oss_local_scripts/install_python_toolchain.sh
+if [[ $run_toolchain_install == 0 ]]; then
+        #run_cleanup
+        #./oss_local_scripts/install_python_toolchain.sh
         REMAINING_OPTIONS=$@
         if [[ $toolchain == default || $toolchain == "" ]]; then
                 if [[ $OSTYPE == darwin* ]]; then
@@ -226,7 +226,7 @@ if [[ $run_toolchain_install == 1 ]]; then
 
         filename=`basename $toolchain`
         if [[ ! -e $filename ]]; then
-                download_file $toolchain $filename
+                #download_file $toolchain $filename
                 tar -xzvf $filename
         else
                 tar -xzvf $filename
@@ -244,8 +244,9 @@ if [[ $run_cmake_configure == 0 ]]; then
   exit
 fi
 
-CC=$PWD/deps/local/bin/cc
-CXX=$PWD/deps/local/bin/c++
+# the dependency -> move to system
+#CC=$PWD/deps/local/bin/cc
+#CXX=$PWD/deps/local/bin/c++
 if [[ $OSTYPE == msys ]]; then
         CC=gcc.exe
         CXX=g++.exe
@@ -259,6 +260,19 @@ elif [ -e $PWD/deps/local/bin/ld ]; then
 else
         LINKER=""
 fi
+
+#mac
+CC=/usr/bin/cc
+CXX=/usr/bin/c++
+
+#ubuntu 14.04
+#CC=/usr/bin/gcc-4.9
+#CC=/usr/bin/clang-3.6
+#CXX=/usr/bin/g++-4.9
+#CXX=/usr/bin/clang++-3.6
+CMAKE=/usr/local/bin/cmake
+LINKER=/usr/bin/ld
+
 
 mkdir -p doc
 

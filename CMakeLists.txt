@@ -37,9 +37,16 @@ include(CheckCXXSourceCompiles)
 #**************************************************************************/
 include_directories(SYSTEM
   ${CMAKE_SOURCE_DIR}/cxxtest
-  ${CMAKE_SOURCE_DIR}/deps/local/include)
+  ${CMAKE_SOURCE_DIR}/deps/local/include
+  /usr/local/include
+  /usr/include
+  )
 
-link_directories(${CMAKE_SOURCE_DIR}/deps/local/lib)
+link_directories(
+        ${CMAKE_SOURCE_DIR}/deps/local/lib
+        /usr/local/lib
+        /usr/lib
+        )
 if (EXISTS ${CMAKE_SOURCE_DIR}/deps/local/lib64)
   link_directories(${CMAKE_SOURCE_DIR}/deps/local/lib64)
 endif()

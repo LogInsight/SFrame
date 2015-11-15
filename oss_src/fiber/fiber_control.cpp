@@ -235,7 +235,7 @@ void fiber_control::worker_init(size_t workerid) {
       schedule[workerid].waiting = false;
       active_workers.inc();
       yield_to(next_fib);
-      if (context_switch_periodic_callback && 
+      if (context_switch_periodic_callback &&
           flush_timer.current_time() > 0.0001 && flush_lock.try_lock()) {
         context_switch_periodic_callback(get_worker_id());
         flush_timer.start();

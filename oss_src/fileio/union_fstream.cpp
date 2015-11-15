@@ -35,7 +35,7 @@ union_fstream::union_fstream(std::string url,
   }
 
   bool is_output_stream = (mode & std::ios_base::out);
-
+  /*
   if(boost::starts_with(url, "hdfs://")) {
     // HDFS file type
     type = HDFS;
@@ -58,7 +58,8 @@ union_fstream::union_fstream(std::string url,
     } catch(...) {
       log_and_throw_io_failure("Unable to open " + url);
     }
-  } else if (boost::starts_with(url, fileio::get_cache_prefix())) {
+  } else */
+      if (boost::starts_with(url, fileio::get_cache_prefix())) {
     // Cache file type
     type = CACHE;
     if (is_output_stream) {

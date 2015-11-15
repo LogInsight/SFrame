@@ -30,8 +30,8 @@ project(sframe)
      unfair_lock.cpp
      sframe_rows.cpp
      generic_avro_reader.cpp
-     odbc_connector.cpp
-     libodbc_shim.cpp
+     #odbc_connector.cpp
+     #libodbc_shim.cpp
      testing_utils.cpp
      sframe_saving.cpp
      sframe_saving_impl.cpp
@@ -44,17 +44,17 @@ project(sframe)
 make_copy_target(_local_sys_util_
         FILES ${CMAKE_CURRENT_SOURCE_DIR}/../unity/python/sframe/sys_util.py)
 
- make_executable(spark_unity
-                SOURCES
-                  spark_unity.cpp
-                REQUIRES
-                  logger
-                  python
-                  cppipc
-                  sframe
-                  pylambda
- )
-add_dependencies(spark_unity _local_sys_util_)
-file(DOWNLOAD http://s3-us-west-2.amazonaws.com/glbin-engine/spark_unity_0.3.jar ${CMAKE_CURRENT_BINARY_DIR}/spark_unity.jar
-      EXPECTED_MD5 b6261c8614da3da1c89dce64fed09420)
+# make_executable(spark_unity
+#                SOURCES
+#                  spark_unity.cpp
+#                REQUIRES
+#                  logger
+#                  python
+#                  cppipc
+#                  sframe
+#                  pylambda
+# )
+#add_dependencies(spark_unity _local_sys_util_)
+#file(DOWNLOAD http://s3-us-west-2.amazonaws.com/glbin-engine/spark_unity_0.3.jar ${CMAKE_CURRENT_BINARY_DIR}/spark_unity.jar
+#      EXPECTED_MD5 b6261c8614da3da1c89dce64fed09420)
 

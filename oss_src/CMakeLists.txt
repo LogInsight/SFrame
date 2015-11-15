@@ -38,7 +38,7 @@ subdirs(
   graphlab
   generics
   sframe_query_engine
-  unity
+  #unity
   image
   table_printer
   )

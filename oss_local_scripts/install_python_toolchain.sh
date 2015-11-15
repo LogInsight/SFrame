@@ -79,7 +79,7 @@ if [[ $haspython == 0 ]]; then
         fi
 fi
 $python_scripts/conda install -y --file oss_local_scripts/conda_requirements.txt
-$python_scripts/pip install -r oss_local_scripts/pip_requirements.txt
+#$python_scripts/pip install -r oss_local_scripts/pip_requirements.txt
 # for windows
 if [ -e deps/conda/bin/include ]; then
         mkdir -p deps/conda/include/python2.7

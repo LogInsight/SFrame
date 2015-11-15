@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <regex>
 #include <fileio/fs_utils.hpp>
-#include <fileio/hdfs.hpp>
+//#include <fileio/hdfs.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 #include <fileio/fixed_size_cache_manager.hpp>
@@ -48,6 +48,7 @@ EXPORT std::string make_canonical_path(const std::string& path) {
  * A helper function to parse the hdfs url.
  * Return a tuple of host, port, and path.
  */
+#if 0
 std::tuple<std::string, std::string, std::string> parse_hdfs_url(std::string url) {
 
   const std::string default_host = "default";
@@ -129,7 +130,10 @@ std::tuple<std::string, std::string, std::string> parse_hdfs_url(std::string url
   return std::make_tuple(host, port, path);
 }
 
+#endif
+
 EXPORT file_status get_file_status(const std::string& path) {
+  /*
   if(boost::starts_with(path, "hdfs://")) {
     // hdfs
     std::string host, port, hdfspath;
@@ -147,7 +151,8 @@ EXPORT file_status get_file_status(const std::string& path) {
       // failure for some reason. fail with missing
       return file_status::MISSING;
     }
-  } else if (boost::starts_with(path, fileio::get_cache_prefix())) {
+  } else */
+  if (boost::starts_with(path, fileio::get_cache_prefix())) {
     // this is a cache file. it is only REGULAR or MISSING
     try {
       fixed_size_cache_manager::get_instance().get_cache(path);
@@ -178,6 +183,7 @@ EXPORT file_status get_file_status(const std::string& path) {
 std::vector<std::pair<std::string, file_status>>
 get_directory_listing(const std::string& path) {
   std::vector<std::pair<std::string, file_status> > ret;
+  /*
   if(boost::starts_with(path, "hdfs://")) {
     // hdfs
     std::string host, port, hdfspath;
@@ -198,7 +204,8 @@ get_directory_listing(const std::string& path) {
     } catch(...) {
       // failure for some reason. return with nothing
     }
-  } else if (boost::starts_with(path, fileio::get_cache_prefix())) {
+  } else */
+  if (boost::starts_with(path, fileio::get_cache_prefix())) {
     // this is a cache file. There is no filesystem.
     // it is only REGULAR or MISSING
     return ret;
@@ -238,6 +245,7 @@ EXPORT bool create_directory(const std::string& path) {
   if (stat != file_status::MISSING) {
     return false;
   }
+  /*
   if(boost::starts_with(path, "hdfs://")) {
     // hdfs
     std::string host, port, hdfspath;
@@ -251,7 +259,8 @@ EXPORT bool create_directory(const std::string& path) {
       // failure for some reason. return with nothing
       return false;
     }
-  } else if (boost::starts_with(path, fileio::get_cache_prefix())) {
+  } else */
+  if (boost::starts_with(path, fileio::get_cache_prefix())) {
     // this is a cache file. There is no filesystem.
     return true;
   } else if (boost::starts_with(path, "s3://")) {
@@ -297,6 +306,7 @@ bool delete_path_impl(const std::string& path,
     return false;
   }
   logstream(LOG_INFO) << "Deleting " << sanitize_url(path) << std::endl;
+  /*
   if(boost::starts_with(path, "hdfs://")) {
     // hdfs only has a recursive deleter. we need to make this safe
     // if the current path is a non-empty directory, fail
@@ -317,7 +327,8 @@ bool delete_path_impl(const std::string& path,
       // failure for some reason. return with nothing
       return false;
     }
-  } else if (boost::starts_with(path, fileio::get_cache_prefix())) {
+  } else */
+  if (boost::starts_with(path, fileio::get_cache_prefix())) {
     try {
       // we ignore recursive here. since the cache can't hold directories
       auto cache_entry = fixed_size_cache_manager::get_instance().get_cache(path);
@@ -346,6 +357,7 @@ EXPORT bool delete_path_recursive(const std::string& path) {
   } else if (stat == file_status::MISSING) {
     return true;
   }
+  /*
   if(boost::starts_with(path, "hdfs://")) {
     // hdfs
     std::string host, port, hdfspath;
@@ -359,7 +371,8 @@ EXPORT bool delete_path_recursive(const std::string& path) {
       // failure for some reason. return with nothing
       return false;
     }
-  } else if(boost::starts_with(path, "s3://")) {
+  } else */
+  if(boost::starts_with(path, "s3://")) {
     return webstor::delete_prefix(path).empty();
   } else if (boost::starts_with(path, fileio::get_cache_prefix())) {
     // recursive deletion not possible with cache
@@ -608,6 +621,7 @@ bool change_file_mode(const std::string path, short mode) {
     return false;
   }
 
+  /*
   if(boost::starts_with(path, "hdfs://")) {
     // hdfs
     std::string host, port, hdfspath;
@@ -621,7 +635,7 @@ bool change_file_mode(const std::string path, short mode) {
       // failure for some reason. return with nothing
       return false;
     }
-  } else if (boost::starts_with(path, fileio::get_cache_prefix())) {
+  } else */ if (boost::starts_with(path, fileio::get_cache_prefix())) {
     // this is a cache file. There is no filesystem.
     return true;
   } else if (boost::starts_with(path, "s3://")) {

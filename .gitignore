@@ -2,7 +2,7 @@
 artifacts/*
 target/*
 src/unity/python/graphlab/deploy/graphlabHadoopYarn-*.jar
-
+\.idea/*
 ###########  C stuff ##################
 # use glob syntax
 syntax: glob

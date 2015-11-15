@@ -20,8 +20,8 @@ make_library(fileio
     oss_webstor/wsconn.cpp
     s3_api.cpp
     run_aws.cpp
-    hdfs.cpp
-    libhdfs_shim.cpp
+    #hdfs.cpp
+    #libhdfs_shim.cpp
     union_fstream.cpp
     general_fstream_source.cpp
     general_fstream_sink.cpp
@@ -40,7 +40,7 @@ make_library(fileio
     block_cache.cpp
     dmlcio/s3_filesys.cc
   REQUIRES
-    curl openssl libxml2 logger pthread z cancel_serverside_ops globals process util soft_hdfs ${PLATFORM_DEPENDENCIES} network random
+    curl openssl libxml2 logger pthread z cancel_serverside_ops globals process util  ${PLATFORM_DEPENDENCIES} network random # soft_hdfs
   MAC_REQUIRES
     iconv
   )
