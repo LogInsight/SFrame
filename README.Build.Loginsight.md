@@ -1,3 +1,8 @@
+现存的问题
+1 cmake 命令怎么生成的
+2 好像可以自动build deps 没找到命令
+3 涉及了一些 patch 没找到
+
 1 安装 gcc-4.9
 
 sudo apt-get install software-properties-common python-software-properties
