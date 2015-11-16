@@ -29,7 +29,7 @@ project(sframe)
      join_impl.cpp
      unfair_lock.cpp
      sframe_rows.cpp
-     generic_avro_reader.cpp
+     #generic_avro_reader.cpp
      #odbc_connector.cpp
      #libodbc_shim.cpp
      testing_utils.cpp
@@ -37,7 +37,7 @@ project(sframe)
      sframe_saving_impl.cpp
    REQUIRES
      random flexible_type fileio parallel lz4 
-     cancel_serverside_ops serialization libjson globals avrocpp odbc
+     cancel_serverside_ops serialization json globals #avrocpp odbc
     EXTERNAL_VISIBILITY
  )
 

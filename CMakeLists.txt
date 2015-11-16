@@ -39,12 +39,16 @@ include_directories(SYSTEM
   ${CMAKE_SOURCE_DIR}/cxxtest
   ${CMAKE_SOURCE_DIR}/deps/local/include
   /usr/local/include
+  /usr/local/opt/libxml2/include/libxml2
+  /usr/local/Cellar/python/2.7.10_2/Frameworks/Python.framework/Versions/Current/include/python2.7
   /usr/include
   )
 
 link_directories(
         ${CMAKE_SOURCE_DIR}/deps/local/lib
         /usr/local/lib
+        /usr/local/opt/libxml2/lib
+        /usr/local/Cellar/python/2.7.10_2/Frameworks/Python.framework/Versions/Current/lib
         /usr/lib
         )
 if (EXISTS ${CMAKE_SOURCE_DIR}/deps/local/lib64)
@@ -427,7 +431,7 @@ macro(make_target_impl NAME FLAGS REQUIREMENTS IS_LIBRARY SHARED)
   else()
     message(STATUS "Adding Executable: ${NAME}")
     # default dependencies
-    target_link_libraries(${NAME} boost pthread openmp)
+    target_link_libraries(${NAME}  pthread openmp)
   endif()
 
   set_property(TARGET ${NAME} PROPERTY IS_LIBRARY ${IS_LIBRARY})

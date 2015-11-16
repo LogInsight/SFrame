@@ -18,7 +18,8 @@ make_library(fault_comm
   sockets/async_reply_socket.cpp
   sockets/socket_receive_pollset.cpp
   REQUIRES 
-  zeromq
+  #zeromq
+  zmq
   network
   util
 )
@@ -42,7 +43,8 @@ make_library(fault_comm_zookeeper
   sockets/async_reply_socket.cpp
   sockets/socket_receive_pollset.cpp
   REQUIRES 
-  zeromq
+  #zeromq
+  zmq
   zookeeper_util
   network
   util
@@ -62,9 +64,10 @@ make_library(fault
   query_object_server_process.cpp
   query_object_server_manager.cpp
   REQUIRES 
-  zeromq
+  #zeromq
+  zmq
   libsodium
-  boost
+  #boost
   zookeeper_util
   fault_comm_zookeeper
   network
