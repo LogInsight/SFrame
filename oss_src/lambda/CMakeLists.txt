@@ -22,14 +22,14 @@ make_library(pylambda_worker_lib
   pylambda.cpp
   graph_pylambda.cpp
   REQUIRES
-    flexible_type cppipc sframe shmipc python_header_only boost_python
+    flexible_type cppipc sframe shmipc boost_python #python_header_only
 )
 
 make_library(pylambda_worker
   SOURCES
   pylambda_worker.cpp
   REQUIRES
-    tcmalloc logger process pylambda_worker_lib python_header_only
+    tcmalloc logger process pylambda_worker_lib #python_header_only
   SHARED
 )
 

@@ -38,9 +38,15 @@ include(CheckCXXSourceCompiles)
 #**************************************************************************/
 include_directories(SYSTEM
   ${CMAKE_SOURCE_DIR}/cxxtest
-  ${CMAKE_SOURCE_DIR}/deps/local/include)
+  ${CMAKE_SOURCE_DIR}/deps/local/include
+  /usr/local/include
+  /usr/local/Cellar/python/2.7.10_2/Frameworks/Python.framework/Versions/Current/include/python2.7
+  /usr/include)
 
-link_directories(${CMAKE_SOURCE_DIR}/deps/local/lib)
+link_directories(${CMAKE_SOURCE_DIR}/deps/local/lib
+                 /usr/local/lib
+                 /usr/local/Cellar/python/2.7.10_2/Frameworks/Python.framework/Versions/Current/lib
+                 /usr/lib)
 if (EXISTS ${CMAKE_SOURCE_DIR}/deps/local/lib64)
   link_directories(${CMAKE_SOURCE_DIR}/deps/local/lib64)
 endif()
@@ -379,7 +385,7 @@ foreach(package ${packages})
 endforeach()
 
 macro(ExternalProject_Add NAME)
-  add_custom_target(${NAME})
+#  add_custom_target(${NAME})
 endmacro()
 
 file(GLOB packages "${DATO_DEPS_OVERRIDE_CMAKE}/ExternalProject*.cmake")
@@ -387,7 +393,7 @@ foreach(package ${packages})
         message(STATUS "We found override package: ${package}")
         get_filename_component(packagename "${package}" NAME_WE)
         #package is of the form ExternalProjectXXX"
-        include(${package})
+#        include(${package})
         STRING(SUBSTRING "${packagename}" 15 -1 depname)
         message(STATUS "We found override package definition: ${depname}")
         string(TOLOWER ${depname} depname)
@@ -405,7 +411,7 @@ foreach(package ${packages})
         endif()
         message(STATUS "We found package: ${package}")
         #package is of the form ExternalProjectXXX"
-        include(${package})
+#        include(${package})
         STRING(SUBSTRING "${packagename}" 15 -1 depname)
         message(STATUS "We found package definition: ${depname}")
         string(TOLOWER ${depname} depname)

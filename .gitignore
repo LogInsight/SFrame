@@ -19,7 +19,6 @@ configure.deps
 config.log
 new_news.txt
 cxxtest/cxxtest/*.pyc
-cmake/*
 dato_deps_linux_default.tar.gz
 dato_deps_mac_default.tar.gz
 dato_deps_win_default.tar.gz

@@ -203,8 +203,8 @@ fi
 
 
 if [[ $run_toolchain_install == 1 ]]; then
-        run_cleanup
-        ./oss_local_scripts/install_python_toolchain.sh
+        #run_cleanup
+        #./oss_local_scripts/install_python_toolchain.sh
         REMAINING_OPTIONS=$@
         if [[ $toolchain == default || $toolchain == "" ]]; then
                 if [[ $OSTYPE == darwin* ]]; then
@@ -225,12 +225,12 @@ if [[ $run_toolchain_install == 1 ]]; then
         fi
 
         filename=`basename $toolchain`
-        if [[ ! -e $filename ]]; then
-                download_file $toolchain $filename
-                tar -xzvf $filename
-        else
-                tar -xzvf $filename
-        fi
+        #if [[ ! -e $filename ]]; then
+        #        #download_file $toolchain $filename
+        #        #tar -xzvf $filename
+        #else
+        #        tar -xzvf $filename
+        #fi
 fi
 
 if [[ $R_integration == 1 ]]; then
@@ -259,6 +259,12 @@ elif [ -e $PWD/deps/local/bin/ld ]; then
 else
         LINKER=""
 fi
+
+# use system's cc c++ cmake ld
+CC=/usr/bin/cc
+CXX=/usr/bin/c++
+CMAKE=/usr/local/bin/cmake
+LINKER=/usr/bin/ld
 
 mkdir -p doc
 
