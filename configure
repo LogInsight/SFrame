@@ -261,10 +261,10 @@ else
 fi
 
 # use system's cc c++ cmake ld
-CC=/usr/bin/cc
-CXX=/usr/bin/c++
-CMAKE=/usr/local/bin/cmake
-LINKER=/usr/bin/ld
+CC=cc
+CXX=c++
+CMAKE=cmake
+LINKER=ld
 
 mkdir -p doc
 
