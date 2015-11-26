@@ -263,7 +263,7 @@ fi
 # use system's cc c++ cmake ld
 CC=cc
 CXX=c++
-CMAKE=cmake
+CMAKE=/usr/local/bin/cmake
 LINKER=ld
 
 mkdir -p doc
