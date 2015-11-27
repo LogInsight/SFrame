@@ -828,13 +828,13 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/src)
 endif()
 
 # add all test directories except for cxxtest
-file(GLOB test_directories "*test")
-foreach(test_directory ${test_directories})
-        if (NOT ${test_directory} MATCHES ".*cxxtest")
-                message(STATUS "Adding Test Directory: ${test_directory}")
-                add_subdirectory(${test_directory})
-        endif()
-endforeach()
+#file(GLOB test_directories "*test")
+#foreach(test_directory ${test_directories})
+#        if (NOT ${test_directory} MATCHES ".*cxxtest")
+#                message(STATUS "Adding Test Directory: ${test_directory}")
+#                add_subdirectory(${test_directory})
+#        endif()
+#endforeach()
 
 
 #/**************************************************************************/

@@ -14,24 +14,24 @@ make_library(pylambda
 )
 
 
-make_library(pylambda_worker_lib
-  SOURCES
-  python_api.cpp
-  python_import_modules.cpp
-  pyflexible_type.cpp
-  pylambda.cpp
-  graph_pylambda.cpp
-  REQUIRES
-    flexible_type cppipc sframe shmipc boost_python #python_header_only
-)
-
-make_library(pylambda_worker
-  SOURCES
-  pylambda_worker.cpp
-  REQUIRES
-    tcmalloc logger process pylambda_worker_lib #python_header_only
-  SHARED
-)
+#make_library(pylambda_worker_lib
+#  SOURCES
+#  python_api.cpp
+#  python_import_modules.cpp
+#  pyflexible_type.cpp
+#  pylambda.cpp
+#  graph_pylambda.cpp
+#  REQUIRES
+#    flexible_type cppipc sframe shmipc boost_python #python_header_only
+#)
+#
+#make_library(pylambda_worker
+#  SOURCES
+#  pylambda_worker.cpp
+#  REQUIRES
+#    tcmalloc logger process pylambda_worker_lib #python_header_only
+#  SHARED
+#)
 
 
 if(${R_INTEGRATION} AND NOT WIN32)

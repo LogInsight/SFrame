@@ -23,6 +23,7 @@ sudo apt-get install  libcurl4-openssl-dev libxml2-dev libxslt-dev python-dev li
 需要注意，是 zmq3
 需要手工安装 libjson
 wget -c http://tcpdiag.dl.sourceforge.net/project/libjson/libjson_7.6.1.zip
+wget -c http://heanet.dl.sourceforge.net/project/libjson/libjson_7.5.1.zip
 需要调整 配置文件 JSONOption  JSON_BINARY BASE64 JSON_LIBRARY 关闭 c 语言接口
 需要参考 Data-Core 之前的补丁，这个库代码质量不高, 必须是 7.5.1
 
