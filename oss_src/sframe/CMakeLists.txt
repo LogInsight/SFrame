@@ -44,6 +44,14 @@ project(sframe)
 make_copy_target(_local_sys_util_
         FILES ${CMAKE_CURRENT_SOURCE_DIR}/../unity/python/sframe/sys_util.py)
 
+make_executable(sframe_test 
+                SOURCES 
+                sframe_test.cpp
+                REQUIRES
+                #python
+                logger
+                sframe)
+
 # make_executable(spark_unity
 #                SOURCES
 #                  spark_unity.cpp
