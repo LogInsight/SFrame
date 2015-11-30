@@ -11,6 +11,8 @@ sudo apt-get update
 sudo apt-get install g++-4.9
 sudo apt-get install gcc-4.9-multilib g++-4.9-multilib
 
+sudo apt-get install automake libtool
+
 2 安装若干依赖库（可选，没搞清楚有没用）
 
 sudo apt-get install libaio-dev ninja-build ragel libhwloc-dev libnuma-dev libpciaccess-dev libcrypto++-dev libboost-all-dev libxen-dev libxml2-dev xfslibs-dev
