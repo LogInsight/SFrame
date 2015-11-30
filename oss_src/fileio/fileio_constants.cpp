@@ -78,7 +78,7 @@ static bool check_cache_file_location(std::string val) {
 }
 
 static bool check_cache_file_hdfs_location(std::string val) {
-  if (get_protocol(val) == "hdfs") {
+/*  if (get_protocol(val) == "hdfs") {
     if (get_file_status(val) == file_status::DIRECTORY) {
       // test hdfs write permission by createing a test directory 
       namespace fs = boost::filesystem;
@@ -96,7 +96,7 @@ static bool check_cache_file_hdfs_location(std::string val) {
     } else {
       throw std::string("Directory: ") + val + " does not exist";
     }
-  }
+  }*/
   throw std::string("Invalid hdfs path: ") + val;
 }
 

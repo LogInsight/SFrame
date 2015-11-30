@@ -11,7 +11,7 @@
 #include <flexible_type/flexible_type.hpp>
 #include <sgraph/sgraph_constants.hpp>
 #include <sframe/sframe.hpp>
-#include <sparsehash/sparse_hash_map>
+#include <google/sparse_hash_map>
 
 namespace graphlab {
 

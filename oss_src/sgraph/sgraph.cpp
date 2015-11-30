@@ -14,7 +14,7 @@
 #include <sframe/sframe_saving.hpp>
 #include <atomic>
 #include <timer/timer.hpp>
-#include <sparsehash/sparse_hash_set>
+#include <google/sparse_hash_set>
 
 /**
  * Specialization of hash of pairs.

@@ -93,7 +93,7 @@ bool delete_path_recursive(const std::string& path);
  * A helper function to parse the hdfs url.
  * Return a tuple of host, port, and path.
  */
-std::tuple<std::string, std::string, std::string> parse_hdfs_url(std::string url);
+//std::tuple<std::string, std::string, std::string> parse_hdfs_url(std::string url);
 
 
 /**
