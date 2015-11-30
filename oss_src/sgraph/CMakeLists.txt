@@ -8,6 +8,6 @@ make_library(sgraph
     sgraph_io.cpp
     sgraph_constants.cpp
   REQUIRES
-    flexible_type sframe pylambda sparsehash
+    flexible_type sframe pylambda #sparsehash
     EXTERNAL_VISIBILITY
 )

@@ -34,7 +34,7 @@ add_library(libzmqa STATIC IMPORTED)
 if(WIN32)
 set_property(TARGET libzmqa PROPERTY IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/deps/local/bin/libzmq.dll)
 else()
-set_property(TARGET libzmqa PROPERTY IMPORTED_LOCATION /usr/local/lib/libzmq.a)
+set_property(TARGET libzmqa PROPERTY IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/deps/local/lib/libzmq.a)
 endif()
 set_property(TARGET libzmqa PROPERTY INTERFACE_LINK_LIBRARIES libsodium)
 

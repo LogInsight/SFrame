@@ -23,7 +23,7 @@ subdirs(
   lazy_eval
   sframe_query_engine
   # graphlab
-  unity
+  # unity
   sketches
   generics
   table_printer

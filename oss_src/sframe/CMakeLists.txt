@@ -37,7 +37,7 @@ project(sframe)
      sframe_saving_impl.cpp
    REQUIRES
      random flexible_type fileio parallel lz4 
-     cancel_serverside_ops serialization libjson globals odbc #avrocpp
+     cancel_serverside_ops serialization libjson globals #odbc avrocpp
     EXTERNAL_VISIBILITY
  )
 

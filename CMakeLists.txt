@@ -40,12 +40,13 @@ include_directories(SYSTEM
   ${CMAKE_SOURCE_DIR}/cxxtest
   ${CMAKE_SOURCE_DIR}/deps/local/include
   /usr/local/include
-  /usr/local/Cellar/python/2.7.10_2/Frameworks/Python.framework/Versions/Current/include/python2.7
+  #/usr/local/Cellar/python/2.7.10_2/Frameworks/Python.framework/Versions/Current/include/python2.7
+  /usr/include/google
   /usr/include)
 
 link_directories(${CMAKE_SOURCE_DIR}/deps/local/lib
                  /usr/local/lib
-                 /usr/local/Cellar/python/2.7.10_2/Frameworks/Python.framework/Versions/Current/lib
+                 #/usr/local/Cellar/python/2.7.10_2/Frameworks/Python.framework/Versions/Current/lib
                  /usr/lib)
 if (EXISTS ${CMAKE_SOURCE_DIR}/deps/local/lib64)
   link_directories(${CMAKE_SOURCE_DIR}/deps/local/lib64)
@@ -828,13 +829,13 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/src)
 endif()
 
 # add all test directories except for cxxtest
-#file(GLOB test_directories "*test")
-#foreach(test_directory ${test_directories})
-#        if (NOT ${test_directory} MATCHES ".*cxxtest")
-#                message(STATUS "Adding Test Directory: ${test_directory}")
-#                add_subdirectory(${test_directory})
-#        endif()
-#endforeach()
+file(GLOB test_directories "*test")
+foreach(test_directory ${test_directories})
+        if (NOT ${test_directory} MATCHES ".*cxxtest")
+                message(STATUS "Adding Test Directory: ${test_directory}")
+                add_subdirectory(${test_directory})
+        endif()
+endforeach()
 
 
 #/**************************************************************************/
