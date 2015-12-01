@@ -21,8 +21,13 @@ sudo apt-get install libaio-dev ninja-build ragel libhwloc-dev libnuma-dev libpc
 
 4. 安装依赖开发库
 
-sudo apt-get install  libcurl4-openssl-dev libxml2-dev libxslt-dev python-dev lib32z1-dev libzmq3-dev libzookeeper-mt-dev libevent-dev sparsehash
+sudo apt-get install  libcurl4-openssl-dev libxml2-dev libxslt-dev python-dev lib32z1-dev libzmq3-dev libzookeeper-mt-dev libevent-dev 
 需要注意，是 zmq3
+
+sparsehash 必须从源码编译
+
+https://github.com/sparsehash/sparsehash
+
 
 [不必要]
 #需要手工安装 libjson

@@ -26,7 +26,7 @@ subdirs(
   # unity
   sketches
   generics
-  table_printer
+  #table_printer
   network
   process
   )
